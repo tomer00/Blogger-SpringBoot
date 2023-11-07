@@ -14,7 +14,9 @@ public class BloggerApplication {
 
 	@Bean
 	public ModelMapper getMm(){
-		return new ModelMapper();
+		var mm =  new ModelMapper();
+		mm.getConfiguration().setAmbiguityIgnored(true);
+		return mm;
 	}
 
 }

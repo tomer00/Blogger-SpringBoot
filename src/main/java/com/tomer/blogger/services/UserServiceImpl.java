@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(UserDTO user, Integer userId) {
-        var utemp = repo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " ID ", userId));
+        var utemp = repo.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", " ID ", userId));
 
         utemp.setAbout(user.getAbout());
         utemp.setName(user.getName());

@@ -25,8 +25,8 @@ public class CateServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO createCategory(CategoryDTO cate) {
-        repo.save(mapper.map(cate, Category.class));
-        return cate;
+        var save = repo.save(mapper.map(cate, Category.class));
+        return mapper.map(save,CategoryDTO.class);
     }
 
     @Override

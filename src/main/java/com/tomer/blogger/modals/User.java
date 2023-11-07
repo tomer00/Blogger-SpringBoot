@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "users")
@@ -28,4 +30,7 @@ public class User {
     private String password;
     @Column(name = "about", columnDefinition = "TEXT")
     private String about;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<Post> posts;
 }
