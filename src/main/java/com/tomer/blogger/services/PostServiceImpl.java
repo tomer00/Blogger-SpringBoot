@@ -3,16 +3,17 @@ package com.tomer.blogger.services;
 import com.tomer.blogger.exceptions.ResourceNotFoundException;
 import com.tomer.blogger.modals.Post;
 import com.tomer.blogger.payloads.PostDTO;
+import com.tomer.blogger.payloads.PostResponse;
 import com.tomer.blogger.repoaitories.RepoCategory;
 import com.tomer.blogger.repoaitories.RepoPost;
 import com.tomer.blogger.repoaitories.RepoUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -65,40 +66,50 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getAllPosts() {
-        return repo.findAll().stream().map((i) ->
+    public PostResponse getAllPosts(int pageSize, int pageNo, String sortBy) {
+        var page = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        var pagePost = repo.findAll(page);
+        var con = pagePost.stream().map((i) ->
                 mapper.map(i, PostDTO.class)
-        ).collect(Collectors.toList());
+        ).toList();
+
+        return new PostResponse(con, pageNo, pageSize,
+                (int) pagePost.getTotalElements(), pagePost.getTotalPages(), pagePost.isLast());
     }
 
     @Override
-    public List<PostDTO> getPostByUser(Integer userId) {
-        return repo.findByUser(repoUser.findById(userId).orElseThrow(() ->
-                        new ResourceNotFoundException("User", " ID ", userId)
-                ))
-                .stream().map((i) ->
-                        mapper.map(i, PostDTO.class)
-                ).collect(Collectors.toList());
+    public PostResponse getPostByUser(Integer userId, int pageSize, int pageNo, String sortBy) {
+
+        var page = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        var pagePost = repo.findByUser(repoUser.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", " ID ", userId)
+        ), page);
+        var con = pagePost.stream().map((i) ->
+                mapper.map(i, PostDTO.class)
+        ).toList();
+        return new PostResponse(con, pageNo, pageSize,
+                (int) pagePost.getTotalElements(), pagePost.getTotalPages(), pagePost.isLast());
     }
 
     @Override
-    public List<PostDTO> getPostByCategory(Integer cateId) {
-        return repo.findByCategory(repoCate.findById(cateId).orElseThrow(() ->
-                        new ResourceNotFoundException("Category", " ID ", cateId)
-                ))
-                .stream().map((i) ->
-                        mapper.map(i, PostDTO.class)
-                ).collect(Collectors.toList());
+    public PostResponse getPostByCategory(Integer cateId, int pageSize, int pageNo, String sortBy) {
+
+        var page = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        var pagePost = repo.findByCategory(repoCate.findById(cateId).orElseThrow(() ->
+                new ResourceNotFoundException("Category", " ID ", cateId)
+        ), page);
+        var con = pagePost.stream().map((i) ->
+                mapper.map(i, PostDTO.class)
+        ).toList();
+
+        return new PostResponse(con, pageNo, pageSize,
+                (int) pagePost.getTotalElements(), pagePost.getTotalPages(), pagePost.isLast());
     }
 
     @Override
-    public List<PostDTO> searchPost(String keyWord) {
-//        return repo.searchBYKey(keyWord)
-//                .stream().map((i) ->
-//             mapper.map(i, PostDTO.class)
-//        ).collect(Collectors.toList());
+    public PostResponse searchPost(String keyWord) {
 
-        return List.of();
+        return new PostResponse();
     }
 
     @Override
