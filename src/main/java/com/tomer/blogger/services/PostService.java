@@ -4,6 +4,8 @@ package com.tomer.blogger.services;
 import com.tomer.blogger.payloads.PostDTO;
 import com.tomer.blogger.payloads.PostResponse;
 
+import java.util.List;
+
 public interface PostService {
 
 

@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("post")
 public class PostController {
@@ -43,7 +41,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDTO> createUser(
+    public ResponseEntity<PostDTO> createPost(
             @Valid @RequestBody PostDTO postDTO,
             @RequestParam Integer cateId,
             @RequestParam Integer userId

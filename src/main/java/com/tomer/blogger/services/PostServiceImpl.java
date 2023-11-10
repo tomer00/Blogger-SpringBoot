@@ -108,8 +108,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse searchPost(String keyWord) {
+        var page = PageRequest.of(0, 1000);
+        var pagePost = repo.findByTitleContaining(keyWord, page);
+        var con = pagePost.stream().map((i) ->
+                mapper.map(i, PostDTO.class)
+        ).toList();
 
-        return new PostResponse();
+        return new PostResponse(con, 0, 1000,
+                (int) pagePost.getTotalElements(), pagePost.getTotalPages(), pagePost.isLast());
     }
 
     @Override
