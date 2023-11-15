@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class PostDTO {
@@ -25,5 +26,7 @@ public class PostDTO {
 
     private String categoryTitle;
     private String userName;
+
+    private List<CommentDTO> comments;
 
 }
