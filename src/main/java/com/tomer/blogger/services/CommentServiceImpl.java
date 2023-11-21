@@ -29,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
         Post p = postRepo.findById(postId)
                 .orElseThrow(
                         () -> new ResourceNotFoundException(
-                                "Post", " ID ", postId
+                                "Comment", " ID ", postId.toString()
                         )
                 );
 

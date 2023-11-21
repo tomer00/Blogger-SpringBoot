@@ -35,6 +35,11 @@ public class UserController {
         return ResponseEntity.ok(service.getUser(id));
     }
 
+    @GetMapping("/update/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Integer id) {
+        return ResponseEntity.ok(service.updateUserToAdmin(id));
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());

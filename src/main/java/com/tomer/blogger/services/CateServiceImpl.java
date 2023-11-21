@@ -31,7 +31,7 @@ public class CateServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO updateCategory(CategoryDTO cate, Integer id) {
-        var caetT = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", " ID ", id));
+        var caetT = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", " ID ", id.toString()));
 
         caetT.setCategoryDes(cate.getCategoryDes());
         caetT.setCategoryTitle(cate.getCategoryTitle());
@@ -44,7 +44,7 @@ public class CateServiceImpl implements CategoryService {
     @Override
     public CategoryDTO getCategory(Integer id) {
         return mapper.map(
-                repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", " ID ", id))
+                repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", " ID ", id.toString()))
                 , CategoryDTO.class
         );
     }

@@ -1,11 +1,13 @@
 package com.tomer.blogger.services;
 
+import com.tomer.blogger.config.Role;
 import com.tomer.blogger.exceptions.ResourceNotFoundException;
 import com.tomer.blogger.modals.User;
 import com.tomer.blogger.payloads.UserDTO;
 import com.tomer.blogger.repoaitories.RepoUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +24,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     @Override
     public UserDTO createUser(User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
         var save = repo.save(user);
         return mapper.map(save, UserDTO.class);
     }
@@ -31,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(UserDTO user, Integer userId) {
         var utemp = repo.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", " ID ", userId));
+                new ResourceNotFoundException("User", " ID ", userId.toString()));
 
         utemp.setAbout(user.getAbout());
         utemp.setName(user.getName());
@@ -54,6 +60,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(Integer id) {
         return mapper.map(repo.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("User", " ID ", id)), UserDTO.class);
+                new ResourceNotFoundException("User", " ID ", id.toString())), UserDTO.class);
+    }
+
+    @Override
+    public UserDTO updateUserToAdmin(Integer id) {
+      var u =  repo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("User", " ID ", id.toString()));
+
+      u.setRole(Role.ADMIN);
+      repo.save(u);
+        return mapper.map(u, UserDTO.class);
     }
 }

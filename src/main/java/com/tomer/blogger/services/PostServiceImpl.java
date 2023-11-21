@@ -35,11 +35,11 @@ public class PostServiceImpl implements PostService {
 
         save.setAddedDate(new Date());
         save.setUser(repoUser.findById(UserId).orElseThrow(() ->
-                new ResourceNotFoundException("User", " ID ", UserId)
+                new ResourceNotFoundException("User", " ID ", UserId.toString())
         ));
 
         save.setCategory(repoCate.findById(categoryId).orElseThrow(() ->
-                new ResourceNotFoundException("Category", " ID ", UserId)
+                new ResourceNotFoundException("Category", " ID ", UserId.toString())
         ));
 
         save = repo.save(save);
@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO updatePost(PostDTO post, Integer postId) {
-        var uTemp = repo.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", " ID ", postId));
+        var uTemp = repo.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", " ID ", postId.toString()));
 
         uTemp.setTitle(post.getTitle());
         uTemp.setImage(post.getImage());
@@ -82,7 +82,7 @@ public class PostServiceImpl implements PostService {
 
         var page = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         var pagePost = repo.findByUser(repoUser.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", " ID ", userId)
+                new ResourceNotFoundException("User", " ID ", userId.toString())
         ), page);
         var con = pagePost.stream().map((i) ->
                 mapper.map(i, PostDTO.class)
@@ -96,7 +96,7 @@ public class PostServiceImpl implements PostService {
 
         var page = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         var pagePost = repo.findByCategory(repoCate.findById(cateId).orElseThrow(() ->
-                new ResourceNotFoundException("Category", " ID ", cateId)
+                new ResourceNotFoundException("Category", " ID ", cateId.toString())
         ), page);
         var con = pagePost.stream().map((i) ->
                 mapper.map(i, PostDTO.class)
@@ -121,6 +121,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO getPost(Integer id) {
         return mapper.map(repo.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Post", " ID ", id)), PostDTO.class);
+                new ResourceNotFoundException("Post", " ID ", id.toString())), PostDTO.class);
     }
 }
