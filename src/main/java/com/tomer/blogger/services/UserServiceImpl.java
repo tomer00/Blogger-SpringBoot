@@ -1,8 +1,10 @@
 package com.tomer.blogger.services;
 
+import com.tomer.blogger.config.JWTHelper;
 import com.tomer.blogger.config.Role;
 import com.tomer.blogger.exceptions.ResourceNotFoundException;
 import com.tomer.blogger.modals.User;
+import com.tomer.blogger.payloads.AuthResponse;
 import com.tomer.blogger.payloads.UserDTO;
 import com.tomer.blogger.repoaitories.RepoUser;
 import org.modelmapper.ModelMapper;
@@ -26,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private BCryptPasswordEncoder encoder;
+
+    @Autowired
+    private JWTHelper jwtHelper;
 
     @Override
     public UserDTO createUser(User user) {
@@ -71,5 +76,15 @@ public class UserServiceImpl implements UserService {
       u.setRole(Role.ADMIN);
       repo.save(u);
         return mapper.map(u, UserDTO.class);
+    }
+
+    @Override
+    public AuthResponse getToken(String user, String pass) {
+
+       var us= repo.findByEmail(user)
+               .orElseThrow(() ->
+                        new ResourceNotFoundException("User", " ID ", user));
+        System.out.println(us.getPassword());
+        return new AuthResponse(jwtHelper.generateToken(us),"DONE",200);
     }
 }

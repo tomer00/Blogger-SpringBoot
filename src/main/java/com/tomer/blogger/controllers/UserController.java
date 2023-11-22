@@ -3,6 +3,7 @@ package com.tomer.blogger.controllers;
 
 import com.tomer.blogger.modals.User;
 import com.tomer.blogger.payloads.ApiResponse;
+import com.tomer.blogger.payloads.AuthResponse;
 import com.tomer.blogger.payloads.UserDTO;
 import com.tomer.blogger.services.UserService;
 import jakarta.validation.Valid;
@@ -20,6 +21,11 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    @PostMapping("auth")
+    public ResponseEntity<AuthResponse> auth(@RequestParam String user, @RequestParam String pass) {
+        return ResponseEntity.ok(service.getToken(user,pass));
+    }
+
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody User user) {
         return new ResponseEntity<>(service.createUser(user), HttpStatus.CREATED);
@@ -29,7 +35,6 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO user, @PathVariable Integer id) {
         return new ResponseEntity<>(service.updateUser(user, id), HttpStatus.OK);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
         return ResponseEntity.ok(service.getUser(id));

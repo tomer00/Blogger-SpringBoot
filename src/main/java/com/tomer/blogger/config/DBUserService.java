@@ -17,8 +17,7 @@ public class DBUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var urv = repo.findByEmail(username).orElseThrow(() ->
+        return repo.findByEmail(username).orElseThrow(() ->
                 new ResourceNotFoundException("User", " Email ", username));
-        return urv;
     }
 }
