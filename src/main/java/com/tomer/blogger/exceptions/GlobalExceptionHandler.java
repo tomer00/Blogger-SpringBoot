@@ -1,7 +1,9 @@
 package com.tomer.blogger.exceptions;
 
 import com.tomer.blogger.payloads.ApiResponse;
+import com.tomer.blogger.payloads.AuthResponse;
 import com.tomer.blogger.payloads.FileResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +33,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<FileResponse> multipartExceptionHandler(FileUploadException ex) {
-        return new ResponseEntity<>(new FileResponse("null", "Please Provide File \n "+ex.getMessage()),
-                HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new FileResponse("null", "Please Provide File \n " + ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<FileResponse> fileNotFoundExceptionHandler(FileNotFoundException ex) {
-        return new ResponseEntity<>(new FileResponse("null", "Provided name is not valid file"),
-                HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new FileResponse("null", "Provided name is not valid file"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<AuthResponse> expiredJwt(ExpiredJwtException ex) {
+        return new ResponseEntity<>(new AuthResponse(ex.getMessage(), 104), HttpStatus.BAD_REQUEST);
+
     }
 }

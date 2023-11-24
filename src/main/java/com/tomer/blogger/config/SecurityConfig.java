@@ -29,25 +29,25 @@ public class SecurityConfig {
 
     @Autowired
     private JWTEntryPoint authEntry;
-//    @Autowired
-//    private JWTFilter filter;
+    @Autowired
+    private JWTFilter filter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth -> {
-//            auth.requestMatchers("/user/**").authenticated();
-//            auth.requestMatchers("/user").permitAll();
-//            auth.requestMatchers("/user/auth").permitAll();
-//            auth.requestMatchers("/post/all").hasAuthority("ADMIN");
-            auth.anyRequest().permitAll();
+            auth.requestMatchers("/auth").permitAll();
+            auth.requestMatchers("/user/**").authenticated();
+            auth.requestMatchers("/post/all").hasAuthority("ADMIN");
+            auth.anyRequest().authenticated();
         });
 
 
-//        http.exceptionHandling(ex-> ex.authenticationEntryPoint(authEntry))
-//                .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilterBefore(filter,UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling(ex-> ex.authenticationEntryPoint(authEntry))
+                .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(filter,UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();

@@ -1,6 +1,5 @@
 package com.tomer.blogger.config;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,8 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
-
+@Component
 public class JWTFilter extends OncePerRequestFilter {
 
 
@@ -33,11 +33,16 @@ public class JWTFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        //getToken
-        var token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer")) {
+        if (Objects.equals(request.getRequestURI(), "/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            var jwtToken = token.substring(7);
+        //getToken
+        var tok = request.getHeader("Authorization");
+        if (tok != null && tok.startsWith("Bearer")) {
+
+            var jwtToken = tok.substring(7);
             String userName = null;
 
             try {
@@ -45,9 +50,9 @@ public class JWTFilter extends OncePerRequestFilter {
                 userName = jwtHelper.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
-            } catch (ExpiredJwtException e) {
-                System.out.println(e.getMessage());
             } catch (MalformedJwtException e) {
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
@@ -55,21 +60,24 @@ public class JWTFilter extends OncePerRequestFilter {
 
                 var userDetail = userDetailsService.loadUserByUsername(userName);
 
-                if (this.jwtHelper.validateToken(token, userDetail)) {
+                if (this.jwtHelper.validateToken(jwtToken, userDetail)) {
 
                     SecurityContextHolder.getContext().setAuthentication(
                             new UsernamePasswordAuthenticationToken(
                                     userDetail, null,
                                     userDetail.getAuthorities())
                     );
-                } else System.out.println("Invalid JWT Token");
+                } else {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied!!");
+                    return;
+                }
             }
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
             return;
         }
 
-        //error no token
-//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+//        error no token
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied!!");
 
     }
 }

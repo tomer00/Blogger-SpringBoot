@@ -77,14 +77,4 @@ public class UserServiceImpl implements UserService {
       repo.save(u);
         return mapper.map(u, UserDTO.class);
     }
-
-    @Override
-    public AuthResponse getToken(String user, String pass) {
-
-       var us= repo.findByEmail(user)
-               .orElseThrow(() ->
-                        new ResourceNotFoundException("User", " ID ", user));
-        System.out.println(us.getPassword());
-        return new AuthResponse(jwtHelper.generateToken(us),"DONE",200);
-    }
 }

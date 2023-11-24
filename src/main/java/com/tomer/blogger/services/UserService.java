@@ -19,6 +19,4 @@ public interface UserService {
     UserDTO getUser(Integer id);
 
     UserDTO updateUserToAdmin(Integer id);
-
-    AuthResponse getToken(String user, String pass);
 }

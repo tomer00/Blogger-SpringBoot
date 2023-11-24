@@ -1,11 +1,9 @@
 package com.tomer.blogger.payloads;
 
+public record AuthResponse(String token, Integer code) {
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public class AuthResponse {
-
-    private final String token,message;
-    private final Integer code;
+    //101 - password Error
+    //102 - User not found
+    //104 - Token Expired
+    //200 - Logged in
 }

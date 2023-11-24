@@ -21,10 +21,6 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @PostMapping("auth")
-    public ResponseEntity<AuthResponse> auth(@RequestParam String user, @RequestParam String pass) {
-        return ResponseEntity.ok(service.getToken(user,pass));
-    }
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody User user) {
