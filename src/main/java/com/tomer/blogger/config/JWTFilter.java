@@ -1,5 +1,7 @@
 package com.tomer.blogger.config;
 
+import com.tomer.blogger.exceptions.JWTException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,14 +48,15 @@ public class JWTFilter extends OncePerRequestFilter {
             String userName = null;
 
             try {
-
                 userName = jwtHelper.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                System.out.println("52  "+e.getMessage());
             } catch (MalformedJwtException e) {
-                System.out.println(e.getMessage());
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("54  "+e.getMessage());
+            } catch (ExpiredJwtException e) {
+//                throw  new JWTException("Jwt Token Expired",102);
+            }catch (Exception e) {
+//                throw  new JWTException("Malformed Token",101);
             }
 
             if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {

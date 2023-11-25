@@ -38,12 +38,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<FileResponse> fileNotFoundExceptionHandler(FileNotFoundException ex) {
-        return new ResponseEntity<>(new FileResponse("null", "Provided name is not valid file"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new FileResponse("null", "Provided name is not valid file"), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<AuthResponse> expiredJwt(ExpiredJwtException ex) {
-        return new ResponseEntity<>(new AuthResponse(ex.getMessage(), 104), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(JWTException.class)
+    public ResponseEntity<JWTException> expiredJwt(JWTException ex) {
+        return new ResponseEntity<>(new JWTException(ex.getMessage(), ex.getCode()), HttpStatus.UNAUTHORIZED);
 
     }
 }
